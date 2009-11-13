@@ -4,13 +4,14 @@
   <!-- CONFIG: jarclassname is the name of your main class to run via java -jar -->
   <!-- CONFIG: thriftpackage is where generated thrift classes go. 
                Only matters if you're using thrift. -->
-  <info organisation="com.example"
-    module="echod"
+  <info organisation="com.foo"
+    module="bar"
     revision="1.0"
-    e:buildpackage="com.example.echod"
-    e:testclass="com.example.echod.TestRunner"
-    e:jarclassname="com.example.echod.Main"
-    e:thriftpackage="com.example.echod.gen"
+    e:buildpackage="com.foo.bar"
+    e:testclass="com.foo.bar.TestRunner"
+    e:jarclassname="com.foo.bar.Main"
+    e:thriftpackage="com.foo.bar.gen"
+    e:protobufpackage="com.foo.bar.gen"
   />
 
   <configurations>
@@ -28,5 +29,7 @@
     <dependency org="net.lag" name="configgy" rev="1.3" />
     <dependency org="commons-logging" name="commons-logging" rev="1.1" />
     <dependency org="commons-lang" name="commons-lang" rev="2.2" />
+    <dependency org="com.google.protobuf" name="protobuf-java" rev="2.2.0" conf="*" /> <!--auto-->
+    <dependency org="junit" name="junit" rev="4.5" conf="test->*" /> <!--auto-->
   </dependencies>
 </ivy-module>

@@ -36,6 +36,7 @@ Folder layout:
       java/
       jni/
       thrift/
+      protobuf/
       resources/  -- files to copy into dist
     test/
       scala/
@@ -55,7 +56,7 @@ Created during the build:
     classes/
     test-classes/
       resources/  -- copied from src/test/resources/
-    gen-java/  -- generated from thrift
+    gen-java/  -- generated from thrift and(?)/or protobuf
     scripts/
   dist/
     <package>-<version>/
@@ -110,6 +111,8 @@ Properties that can change behavior
     if defined, pack dependent jars into the final dist jar, to remove dependencies
 - thrift.bin
     location of the "thrift" executable
+- protobuf.bin
+    location of the "protoc" executable
 - push.build_name
     if defined, add the build name (and git revision) to jars when pushed to the repo
 - dist.build_integration
@@ -126,6 +129,8 @@ Extra ivy thingies
 - e:thriftpackage
     output package for generated thrift classes; causes thrift DDLs to be
     compiled
+- e:protobufpackage
+    output package for generated protocol buffers classes
 - e:testclass
     class to execute for unit tests -- required, in order to run tests
 - e:stresstestclass

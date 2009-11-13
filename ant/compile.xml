@@ -46,6 +46,54 @@
   </target>
 
 
+
+  <!-- generate protobuf stubs, too, if necessary -->
+  <!-- 
+       if for some crazy there is thrift *and* protobuf stuff, i suppose the 
+       shared target dir has the potential to clobber one or the other.
+       thrift seems to use the gen-* paradigm regularly, but protobuf doesn't
+       really have one ...
+    -->
+  <property name="protobuf.source.dir" value="${source.dir}/protobuf" />
+  <property name="protobuf.target.dir" value="${target.dir}/gen-java" />
+
+  <macrodef name="generate-protobuf">
+    
+    <sequential>
+      <pathconvert property="protobuf.gen.path">
+        <path location="${ivy.extra.protobufpackage}" />
+        <unpackagemapper from="${basedir}/*" to="${protobuf.target.dir}/*" />
+      </pathconvert>
+      <mkdir dir="${protobuf.target.dir}" />
+      <property name="protobuf.bin" value="protoc" />
+      <apply executable="${protobuf.bin}" dest="${protobuf.gen.path}" 
+             failonerror="true"
+             skipemptyfilesets="true" verbose="true">
+        <arg value="--java_out=${protobuf.target.dir}" />
+        <arg value="--proto_path=${protobuf.source.dir}" />
+        <fileset dir="${protobuf.source.dir}" includes="**/*.proto" />
+        <globmapper from="*.proto" to="*.java" /> 
+      </apply>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="compile-generated-protobuf">
+    <sequential>
+      <javac srcdir="${protobuf.target.dir}" destdir="${target.dir}/classes" 
+	     deprecation="on">
+        <classpath>
+          <path refid="deps.path" />
+        </classpath>
+        <include name="**/*.java" />
+      </javac>
+    </sequential>
+  </macrodef>
+
+  <target name="compile-protobuf" if="build.protobuf">
+    <generate-protobuf />
+    <compile-generated-protobuf />
+  </target>
+
   <!-- if there's any jni, compile it -->
 
   <target name="check-jni-source" if="build.jni">
@@ -218,7 +266,7 @@
   <target name="copy-extra" depends="copy-resources, copy-config, copy-extra-config, copy-extra-libs, copy-extra-dist" />
 
 
-  <target name="compile" depends="prepare, find-source, compile-thrift, check-jni-source, compile-jni,
+  <target name="compile" depends="prepare, find-source, compile-thrift, compile-protobuf, check-jni-source, compile-jni,
     install-jni, compile-java, compile-scala, write-build-info, copy-extra"
     description="compile java and scala code" />
 

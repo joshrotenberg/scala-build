@@ -22,6 +22,7 @@ read -p "  project name (like 'echod'): " -e project_name
 read -p "  description for humans: " -e description
 echo "  ----------"
 read -p "  using thrift? [n]: " -e use_thrift
+read -p "  using protobuf? [n]: " -e use_protobuf
 read -p "  using jmock? [n]: " -e use_jmock
 read -p "  need init.d script? [n]: " -e use_initd
 
@@ -29,6 +30,7 @@ test "x$package_root" = "x" && package_root="com.example"
 test "x$project_name" = "x" && project_name="echod"
 test "x$description" = "x" && description="sample project"
 test "x$use_thrift" = "x" && use_thrift="n"
+test "x$use_protobuf" = "x" && use_protobuf="n"
 test "x$use_jmock" = "x" && use_jmock="n"
 test "x$use_initd" = "x" && use_initd="n"
 package_path=$(echo ${package_root} | sed -e 's/\./\//g')
@@ -44,6 +46,7 @@ cat ivy/ivy.xml | \
       -e "s/e:testclass=\".*\"/e:testclass=\"${package_root}.${project_name}.TestRunner\"/" \
       -e "s/e:jarclassname=\".*\"/e:jarclassname=\"${package_root}.${project_name}.Main\"/" \
       -e "s/e:thriftpackage=\".*\"/e:thriftpackage=\"${package_root}.${project_name}.gen\"/" \
+      -e "s/e:protobufpackage=\".*\"/e:protobufpackage=\"${package_root}.${project_name}.gen\"/" \
       > ivy/ivy2.xml && \
   mv ivy/ivy2.xml ivy/ivy.xml
 
@@ -67,6 +70,11 @@ mkdir -p src/test/scala/${package_path}/${project_name}
 test $use_thrift = "n" || {
   mkdir -p src/test/thrift
   inject_dep thrift libthrift 751142 "*"
+}
+
+test $use_protobuf = "n" || {
+  mkdir -p src/test/protobuf
+  inject_dep com.google.protobuf protobuf-java 2.2.0 "*" 
 }
 
 # temporarily needed due to bug in specs:

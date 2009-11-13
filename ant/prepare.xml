@@ -34,6 +34,9 @@
     <pathconvert property="build.thrift" setonempty="false">
       <fileset dir="${source.dir}" includes="thrift/**/*.thrift" />
     </pathconvert>
+    <pathconvert property="build.protobuf" setonempty="false">
+      <fileset dir="${source.dir}" includes="protobuf/**/*.proto" />
+    </pathconvert>
     <pathconvert property="build.jni" setonempty="false">
       <fileset dir="${source.dir}" includes="jni/build.xml" />
     </pathconvert>
